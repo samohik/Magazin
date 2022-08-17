@@ -1,0 +1,16 @@
+{% extends 'app_store/base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h1>Profile</h1>
+<ul>
+  <li>Your image: <img src="{{ request.user.profile.first.image.url }}" width="200" height="" alt="Fail"/></li>
+  <li>First name: {{ request.user.first_name }}</li>
+  <li>Second name: {{ request.user.last_name }}</li>
+  <li>Phone: {{ request.user.profile.first.phone }}</li>
+</ul>
+<a href="{% url 'account:edit_profile' %}#edit">Edit</a>
+
+{% endblock %}

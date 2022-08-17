@@ -1,0 +1,142 @@
+{% extends 'app_store/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header" id="content">
+          <h1 class="Middle-title">Megano Product
+          </h1>
+        </div>
+      </div>
+    </div>
+    <div class="Section">
+      <div class="wrap">
+        <div class="Product">
+          <div class="ProductCard">
+
+            <!-- Start Image -->
+            <div class="ProductCard-look">
+              <div class="ProductCard-photo">
+                <img src="{{ product.image.url }}" width="400" alt="Fail">
+              </div>
+            </div>
+            <!-- End Image -->
+
+            <div class="ProductCard-desc">
+              <div class="ProductCard-header">
+                <h2 class="ProductCard-title">Name: {{ product.name }}
+                </h2>
+                <div class="ProductCard-info">
+                  <div class="ProductCard-count">
+                    <h3>Count: {{ product.count }}</h3>
+                  </div>
+                  <div class="ProductCard-cost">
+                    <div class="ProductCard-price"><h3>Price: ${{ product.price }}</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Start Description -->
+              <div class="ProductCard-text">
+                <h3>Description: {{ product.description }}</h3>
+              </div>
+              <!-- End Description -->
+
+              <!-- Start Cart Product -->
+              <div class="ProductCard-cart"><h2>Cart</h2>
+                <div class="ProductCard-cartElement ProductCard-cartElement_amount">
+                  <div class="Amount Amount_product">
+                     <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                     {{ cart_product_form }}
+                     {% csrf_token %}
+                     <input type="submit" value="Add to cart">
+                     </form>
+                  </div>
+                </div>
+              </div>
+              <!-- End Cart Product -->
+
+              <!-- Start Tag Product -->
+              <div class="ProductCard-footer">
+                <div class="ProductCard-tags">
+                  <strong class="ProductCard-tagsTitle">Tags:</strong>
+                  {% for tag in product.tags.all %}
+                  <a href="#">{{ tag }}</a>
+                  {% endfor %}
+                </div>
+              </div>
+              <!-- End Tag Product -->
+
+            </div>
+          </div>
+          <div class="Tabs Tabs_default">
+            <div class="Tabs-links"><a class="Tabs-link_ACTIVE Tabs-link" href="#description"><span>Описание</span></a><a class="Tabs-link" href="#addit"><span>AdditionaL Info</span></a><a class="Tabs-link" href="#reviews"><span>Reviews (3)</span></a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="Tabs-wrap">
+    <div class="Tabs-block" id="sellers">
+      <div class="Categories Categories_product">
+      </div>
+    </div>
+
+    <!-- Start Review -->
+    <div class="Tabs-block" id="reviews">
+      <header class="Section-header">
+        <h3 class="Section-title">Reviews
+        </h3>
+      </header>
+      <div class="Comments">
+        {% if product.review %}
+          {% for product in product.review.all|slice:":10" %}
+          <p>
+            <div class="Comment">
+              <div class="Comment-column Comment-column_pict">
+                <div class="Comment-avatar">
+                </div>
+              </div>
+              <div class="Comment-column">
+                <header class="Comment-header">
+                  <div>
+                    <strong class="Comment-title">User: {{ product.profile }}<br></strong>
+                    <span class="Comment-date">Date: {{ product.created }}</span>
+                  </div>
+                </header>
+                <div class="Comment-content">Text: {{ product.text }}</div>
+              </div>
+            </div>
+          </p>
+          {% endfor %}
+        {% else %}
+          <p>Nothing here</p>
+        {% endif %}
+      </div>
+      <header class="Section-header Section-header_product">
+        <h3 class="Section-title">Add Review
+        </h3>
+        {% if request.user.is_authenticated %}
+        <div class="Tabs-addComment">
+          <form class="form" action="#" method="post">
+            <div class="form-group">
+              {% csrf_token %}
+              {{ review.as_p }}
+              <input type="submit" value="Submit Review">
+            </div>
+          </form>
+        </div>
+        {% else %}
+
+          <a href="{% url 'account:login' %}">You need login first</a>
+        {% endif %}
+      </header>
+    </div>
+    <!-- End Review -->
+
+  </div>
+</div>
+{% endblock %}

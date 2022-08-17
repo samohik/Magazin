@@ -1,0 +1,37 @@
+{% extends 'app_store/base.html' %}
+{% load static %}
+
+{% block title %}Category{% endblock %}
+
+{% block content %}
+  Name: {{ cat_product.name }}<br>
+    <p>
+      {% if products %}
+        {% for product in products %}
+      <ul>
+          <li><a href="{% url 'store:product_detail' product.id %}#content">
+          Name: {{ product.name }}<br>
+          <img src="{{ product.image.url }}" width="200" alt="Fail">
+          <p>Description: {{ product.description|truncatechars:7 }}</p>
+
+          <!-- Start Count Reviews -->
+          <a href="{% url 'store:product_detail' product.id %}#reviews">
+            Reviews: {{ product.review.all|length }}
+          </a>
+          <!-- End Count Reviews -->
+
+
+          <!-- Start Button Buy -->
+          <form action="{% url 'cart:cart_add' product.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Buy">
+           </form>
+          <!-- End Button Buy -->
+          </li>
+      </ul>
+            {% endfor %}
+      {% else %}
+        Empty
+      {% endif %}
+    </p>
+{% endblock %}

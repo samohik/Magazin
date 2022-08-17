@@ -1,0 +1,16 @@
+{% extends 'app_store/base.html' %}
+{% load static %}
+
+{% block title %}
+  Registration
+{% endblock %}
+
+{% block content %}
+<div class="Registration">
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+  </form>
+</div>
+{% endblock %}
