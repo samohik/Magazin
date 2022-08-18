@@ -1,20 +1,15 @@
 import logging
 
-from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views import View, generic
-from django.views.generic import TemplateView, FormView, CreateView, ListView, UpdateView
-from django.contrib.auth.decorators import login_required
+from django.views import generic
+from django.views.generic import TemplateView, FormView
 
 from account.forms import RegisterForm, EditUserForm
-from account.models import Profile
 
 logger = logging.getLogger('main')
 
@@ -35,7 +30,7 @@ class EditProfileView(FormView):
         form = self.form_class(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse_lazy('account:profile'))
+            return
         else:
             context = {'form': self.form_class(instance=request.user)}
             return render(request, self.template_name, context)

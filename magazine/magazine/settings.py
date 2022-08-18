@@ -15,6 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.urls import reverse_lazy
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -42,12 +43,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
-    'account.apps.AccountConfig',
+    'account',
     'app_store.apps.AppStoreConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
+    'rest_framework',
     'django_filters',
 ]
+
+AUTH_USER_MODEL = 'account.CustomUser'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -175,7 +184,6 @@ LOGGING = {
         },
     }
 }
-
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

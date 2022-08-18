@@ -1,31 +1,21 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, ReadOnlyPasswordHashField
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from account.models import Profile
+from magazine import settings
 
 
 class RegisterForm(UserCreationForm):
     pass
 
 
-# class ProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-
-
 class EditUserForm(UserChangeForm):
-    phone = forms.CharField(max_length=20)
-    image = forms.FileField(disabled=True)
-
     class Meta:
-        model = User
-        fields = ['first_name', 'last_name']
+        models = settings.AUTH_USER_MODEL
+        fields = '__all__'
+        # fields = ['first_name', 'last_name', 'phone', 'image']
 
 
-class ProfileUserForm:
-    class Meta:
-        model = Profile
+
 
 
 class LoginForm(forms.Form):
