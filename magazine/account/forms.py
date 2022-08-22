@@ -1,21 +1,20 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from magazine import settings
+from account.models import User
 
 
 class RegisterForm(UserCreationForm):
-    pass
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'phone', 'image']
 
 
 class EditUserForm(UserChangeForm):
     class Meta:
-        models = settings.AUTH_USER_MODEL
-        fields = '__all__'
-        # fields = ['first_name', 'last_name', 'phone', 'image']
-
-
-
+        model = User
+        # fields = '__all__'
+        fields = ['first_name', 'last_name', 'phone', 'image']
 
 
 class LoginForm(forms.Form):

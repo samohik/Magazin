@@ -7,9 +7,11 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, UpdateView
 
-from account.forms import RegisterForm, EditUserForm
+from account.forms import RegisterForm
+from account.models import User
+from orders.models import OrderItem
 
 logger = logging.getLogger('main')
 
@@ -21,19 +23,11 @@ class RegisterView(SuccessMessageMixin, generic.CreateView):
     success_message = "Your profile was created successfully"
 
 
-class EditProfileView(FormView):
+class EditProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'account/edit_profile.html'
-    form_class = EditUserForm
-    success_url = reverse_lazy('account:edit_profile')
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return
-        else:
-            context = {'form': self.form_class(instance=request.user)}
-            return render(request, self.template_name, context)
+    model = User
+    fields = ['first_name', 'last_name', 'phone', 'image']
+    success_url = reverse_lazy('account:profile')
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
@@ -54,7 +48,7 @@ class AuthenticateView(LoginView):
         return super(AuthenticateView, self).form_valid(form)
 
 
-class LogOutView(LogoutView):
+class LogOutView(LoginRequiredMixin, LogoutView):
     template_name = "account/logged_out.html"
 
 
@@ -63,6 +57,11 @@ class ProfileUser(LoginRequiredMixin, TemplateView):
     Show detail data of user.
     """
     template_name = 'account/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileUser, self).get_context_data(**kwargs)
+        context['orders'] = OrderItem.objects.first()
+        return context
 
 
 class ProfileExample(TemplateView):

@@ -3,20 +3,14 @@ from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, ListView
 from django_filters.views import FilterView
 
-from app_store.filters import ItemsFilter
-from app_store.forms import ReviewForm, SortForm, TagsForm
-from app_store.models import Items, Reviews, Category
+from .filters import ItemsFilter
+from .forms import ReviewForm, SortForm, TagsForm
+from .models import Items, Reviews, Category
 from cart.forms import CartAddProductForm
 
 
 class MainTest(TemplateView):
     template_name = 'app_store/index.html'
-
-
-# def sort_review(order: str):
-#     products = Items.objects.all() \
-#         .annotate(num_reviews=Count('review')).order_by(order)
-#     return products
 
 
 class Main(FilterView):

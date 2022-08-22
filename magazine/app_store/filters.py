@@ -1,6 +1,6 @@
 import django_filters
 
-from app_store.models import Manufacturer, Items, Characteristic
+from .models import Manufacturer, Items, Characteristic
 
 
 class ItemsFilter(django_filters.FilterSet):

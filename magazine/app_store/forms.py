@@ -20,10 +20,7 @@ class SortForm(forms.Form):
 
 
 class TagsForm(ModelForm):
-    #     < form
-    #     method = "get" >
-    #     {{form}}
-    # < / form >
+
     class Meta:
         model = Tags
         fields = ['name']

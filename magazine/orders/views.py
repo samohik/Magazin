@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import FormView
 
@@ -6,7 +7,7 @@ from .forms import OrderCreateForm
 from cart.cart import Cart
 
 
-class OrderCreate(FormView):
+class OrderCreate(LoginRequiredMixin, FormView):
     template_name = 'orders/create.html'
     form_class = OrderCreateForm
 
@@ -24,7 +25,7 @@ class OrderCreate(FormView):
                                      product=item['product'],
                                      price=item['price'],
                                      quantity=item['quantity'])
-            """Очищаем корзину."""
+            """Clear cart"""
             cart.clear()
             return render(self.request,
                           'orders/created.html',

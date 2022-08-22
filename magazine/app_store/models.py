@@ -1,13 +1,14 @@
 from django.db import models
 from django.urls import reverse
 
+from account.models import User
 from magazine import settings
 
 
 class Items(models.Model):
-    profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='item', null=True)
+    profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='item', null=True)
     name = models.CharField(verbose_name='Name', max_length=120)
-    image = models.ImageField(verbose_name='Image', upload_to='product', blank=True, null=True)
+    image = models.ImageField(verbose_name='Image', upload_to='product')
     description = models.TextField(verbose_name='Description')
     price = models.PositiveIntegerField(verbose_name='Price')
     count = models.PositiveIntegerField(verbose_name='Count', default=1)
@@ -93,7 +94,7 @@ class Characteristic(models.Model):
 
 
 class Reviews(models.Model):
-    profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='review', null=True)
+    profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review', null=True)
     item = models.ForeignKey('Items', on_delete=models.CASCADE, related_name='review', null=True)
     text = models.TextField(verbose_name='Review')
     created = models.DateTimeField(verbose_name='Created', auto_now_add=True)

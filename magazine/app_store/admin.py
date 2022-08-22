@@ -41,4 +41,3 @@ class ManufacturerAdmin(admin.ModelAdmin):
 @admin.register(Characteristic)
 class CharacteristicAdmin(admin.ModelAdmin):
     list_display = ['name']
-
