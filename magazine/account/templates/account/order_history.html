@@ -1,0 +1,23 @@
+{% extends "app_store/base.html" %}
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+{% if orders %}
+  {% for order in orders %}
+    <ul>
+      <li>
+        Product: {{ order.product }}<br>
+        Quantity: {{ order.quantity }}<br>
+        Price: {{ order.price }}<br>
+        Payment: {{ order.order.payment }}<br>
+        Delivery: {{ order.order.delivery }}<br>
+        Status: {{ order.order.paid }}<br>
+        Text error: {{ order }}<br>
+      </li>
+
+    </ul>
+  {% endfor %}
+{% else %}
+  <p>None</p>
+{% endif %}
+{% endblock %}

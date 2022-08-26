@@ -15,8 +15,7 @@ class OrderItemAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
-        'address', 'postal_code', 'city', 'paid',
+        'id', 'user', 'paid', 'created', 'updated'
     ]
-
     list_filter = ['paid']
     inlines = [OrderItemInline]

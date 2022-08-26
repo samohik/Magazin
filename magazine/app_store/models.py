@@ -6,7 +6,6 @@ from magazine import settings
 
 
 class Items(models.Model):
-    profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='item', null=True)
     name = models.CharField(verbose_name='Name', max_length=120)
     image = models.ImageField(verbose_name='Image', upload_to='product')
     description = models.TextField(verbose_name='Description')

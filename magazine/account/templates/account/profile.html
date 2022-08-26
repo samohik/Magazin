@@ -5,16 +5,28 @@
 
 {% block content %}
 <h1>Profile</h1>
+  {{ request.user }}
 <ul>
-  {% if user.image %}
+
+  {% if request.user.image %}
     <li>Your image: <img src="{{ request.user.image.url }}" width="200" height="" alt="Fail"/></li>
   {% endif %}
   <li>First name: {{ request.user.first_name }}</li>
   <li>Second name: {{ request.user.last_name }}</li>
   <li>Phone: {{ request.user.phone }}</li>
 </ul>
-{% if orders %}
-  <p>Orders: {{ orders }}</p>
+
+<h3>Your last order</h3>
+{% if order %}
+    <ul>
+      <li><a href="{% url 'account:order_history' %}">
+        Orders: {{ order.product }}<br>
+        Quantity: {{ order.quantity }}<br>
+        Price: ${{ order.price }}<br>
+        Paid: {{ order.order.paid }}</a><br>
+
+      </li>
+    </ul>
 {% else %}
   <p>Nothing here</p>
 {% endif %}

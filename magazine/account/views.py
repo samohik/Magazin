@@ -7,7 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, ListView
 
 from account.forms import RegisterForm
 from account.models import User
@@ -60,7 +60,26 @@ class ProfileUser(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProfileUser, self).get_context_data(**kwargs)
-        context['orders'] = OrderItem.objects.first()
+        context['order'] = OrderItem.objects.select_related(
+            'user',
+            'order',
+            'product',
+        ).filter(user=self.request.user).first()
+        return context
+
+
+class OrderHistory(LoginRequiredMixin, ListView):
+    template_name = 'account/order_history.html'
+    model = OrderItem
+    context_object_name = 'orders'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(OrderHistory, self).get_context_data(**kwargs)
+        context[self.context_object_name] = OrderItem.objects.select_related(
+            'product', 'order', 'user'
+        ).filter(
+            user=self.request.user
+        )
         return context
 
 
