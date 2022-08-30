@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.generic import FormView, ListView, TemplateView
+from django.shortcuts import render
+from django.views.generic import FormView
 
-from .models import OrderItem, Order
-from .forms import OrderCreateForm, PaymentForm
+from .tasks import make_thumbnails
+
 from cart.cart import Cart
+from .forms import OrderCreateForm, PaymentForm
+from .models import OrderItem, Order
 
 
 class OrderCreate(LoginRequiredMixin, FormView):
@@ -40,18 +42,27 @@ class Payment(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(Payment, self).get_context_data(**kwargs)
+        context['form'] = PaymentForm(self.request.GET)
+        context['order'] = Order.objects.filter(user=self.request.user).first().payment
         return context
 
-    def form_valid(self, form):
-        number = form.cleaned_data['number']
-        order = Order.objects.first()
-        try:
-            if not int(number) % 2 and number[-1] != 0:
-                return HttpResponse(f'True {number}, {order}')
+    def post(self, request, *args, **kwargs):
+        order = Order.objects.filter(user=self.request.user).first()
+        answer = self.get_context_data()['order']
+        if answer == 'random':
+            number = request.POST['Code']
+            make_thumbnails.delay(number, order)
+            return HttpResponse('«Ждём подтверждения оплаты платёжной системы')
+        else:
+            form = PaymentForm(request.POST)
+            if form.is_valid():
+                number = form.cleaned_data['number']
+                make_thumbnails.delay(number, order)
+                return HttpResponse('«Ждём подтверждения оплаты платёжной системы')
             else:
-                return HttpResponse(f'False {number}, {order}')
-        except BaseException as e:
-            return self.form_invalid(form)
+                context = {
+                    'form': PaymentForm(request.GET),
+                    'order': Order.objects.filter(user=self.request.user).first().payment
+                }
+                return render(request, self.template_name, context)
 
-    def form_invalid(self, form):
-        return HttpResponse(f'False {form}')

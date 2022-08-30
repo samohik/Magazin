@@ -18,22 +18,18 @@ function change(){
 
 <form method="post" class="order-form" id="form">
   {% csrf_token %}
-  <fieldset class="form-field">
-    <label id="label" value="Hy">{{ form.number.label }}</label>
-    <input readonly="readonly" name="Code" id="code" value="">
-    <button id="random" type="button" onclick="change()">Random</button>
 
-    {% if form.number.errors %}
-      <ul class="errors">
-        {% for error in form.number.errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  </fieldset>
+  {% if order == 'random' %}
+    <fieldset class="form-field">
+      <label id="label" value="Hy">{{ form.number.label }}</label>
+      <input readonly="readonly" name="Code" id="code" value="">
+      <button id="random" type="button" onclick="change()">Random</button>
+    </fieldset>
+  {% else %}
+    {{ form.as_p }}
+  {% endif %}
 
   <input type="submit" value="Confirm">
 </form>
-
 
 {% endblock %}

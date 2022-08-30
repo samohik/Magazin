@@ -24,6 +24,9 @@
         Quantity: {{ order.quantity }}<br>
         Price: ${{ order.price }}<br>
         Paid: {{ order.order.paid }}</a><br>
+        {% if order.order.error %}
+          Error: {{  order.order.error }}<br>
+        {% endif %}
 
       </li>
     </ul>

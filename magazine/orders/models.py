@@ -26,10 +26,11 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     paid = models.BooleanField(default=False)
     comments = models.TextField(blank=True)
+    error = models.TextField(blank=True)
     user = models.ForeignKey(User, related_name='order', on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['created']
+        ordering = ['-created']
 
     def __str__(self):
         return 'Order {}'.format(self.id)
