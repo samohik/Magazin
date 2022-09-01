@@ -61,9 +61,7 @@ class ProfileUser(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ProfileUser, self).get_context_data(**kwargs)
         context['order'] = OrderItem.objects.select_related(
-            'user',
-            'order',
-            'product',
+            'user', 'order', 'product',
         ).filter(user=self.request.user).first()
         return context
 

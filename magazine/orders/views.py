@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import FormView
 
-from .tasks import make_thumbnails
+from .tasks import validator, adding_task
 
 from cart.cart import Cart
 from .forms import OrderCreateForm, PaymentForm
@@ -51,13 +51,13 @@ class Payment(LoginRequiredMixin, FormView):
         answer = self.get_context_data()['order']
         if answer == 'random':
             number = request.POST['Code']
-            make_thumbnails.delay(number, order)
+            validator.delay(number)
             return HttpResponse('«Ждём подтверждения оплаты платёжной системы')
         else:
             form = PaymentForm(request.POST)
             if form.is_valid():
                 number = form.cleaned_data['number']
-                make_thumbnails.delay(number, order)
+                validator.delay(number)
                 return HttpResponse('«Ждём подтверждения оплаты платёжной системы')
             else:
                 context = {

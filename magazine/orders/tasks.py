@@ -1,12 +1,10 @@
-from django.http import HttpResponse
-from celery import shared_task
-
 from magazine.celery import celery_app
+from orders.models import Order
 
 
 @celery_app.task
-def make_thumbnails(number, model):
+def validator(number: str):
     if not int(number) % 2 and str(number)[-1] != 0:
-        model.update(paid=True)
+        Order.objects.update(paid=True)
     else:
-        model.update(paid=False, error='Error occur')
+        Order.objects.update(paid=False, error='Error occur')
