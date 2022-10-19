@@ -1,1 +1,1 @@
-My pet project "Magazine"
+My pet-project "Magazine"
