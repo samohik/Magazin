@@ -18,8 +18,9 @@ function change(){
 
 <form method="post" class="order-form" id="form">
   {% csrf_token %}
+  Order: {{ order.id }}<br>
 
-  {% if order == 'random' %}
+  {% if order.payment == 'random' %}
     <fieldset class="form-field">
       <label id="label" value="Hy">{{ form.number.label }}</label>
       <input readonly="readonly" name="Code" id="code" value="">

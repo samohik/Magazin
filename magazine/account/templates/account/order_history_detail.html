@@ -1,0 +1,58 @@
+{% extends "app_store/base.html" %}
+{% block title %}Order {{ products.id }} History{% endblock %}
+
+{% block content %}
+<h3>History</h3>
+
+<style>
+   ul.hr {
+    margin: 0; /* Обнуляем значение отступов */
+    padding: 4px; /* Значение полей */
+   }
+   ul.hr li {
+    display: inline; /* Отображать как строчный элемент */
+    margin-right: 5px; /* Отступ слева */
+    border: 1px solid #000; /* Рамка вокруг текста */
+    padding: 3px; /* Поля вокруг текста */
+   }
+   a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+  }
+  </style>
+{{ products }}
+<ul class="hr">
+  {% for product in products.order_items.all %}
+    <li>
+      Product: {{ product.product }}
+      Quantity: {{ product.quantity }}
+      Price: ${{ product.price }}
+    </li>
+  {% endfor %}
+
+</ul>
+Address: {{ products.address }}<br>
+Postal code: {{ products.postal_code }}<br>
+Created: {{ products.created }}<br>
+Total: ${{ products.get_total_cost }}<br>
+Payment: {{ products.payment }}<br>
+Delivery: {{ products.delivery }}<br>
+Status: {{ products.paid }}<br>
+
+{% if products.error %}
+  Error: {{  products.error }}<br>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button onclick="location.href='{% url 'orders:payment' products.id %}'"
+          type="submit">Repeat payment</button>
+  </form>
+
+{% endif %}
+
+{% endblock %}

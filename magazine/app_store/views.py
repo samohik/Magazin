@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, ListView
@@ -17,26 +18,24 @@ class Main(FilterView):
     template_name = 'app_store/main_page.html'
     model = Items
     paginate_by = 10
+    context_object_name = 'items'
     filterset_class = ItemsFilter
-    context_object_name = 'products'
 
     def get_queryset(self):
         qs = super(Main, self).get_queryset()
-        qs = qs.prefetch_related('review').all()
-        sort = self.kwargs.get('choices')
+        qs = qs.select_related().prefetch_related('review').all()
+        sort = self.request.GET.get('choices')
         if sort is not None:
             qs = qs.order_by(sort)
         return qs
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(Main, self).get_context_data(**kwargs)
-        items = Items.objects.prefetch_related('review').all()
         context['form'] = SortForm(self.request.GET)
         # todo нужно перехватить get_queryset и найти все продукты
-        #  с выбранным тегом из категорией
-        context['filter'] = ItemsFilter(self.request.GET, queryset=self.get_queryset())
-        context['limited'] = items.order_by('count')[:16]
-        context['popular'] = items.order_by('-sold')[:8]
+        #  с выбранным тегом из категории
+        # context['limited'] = Items.objects.order_by('count')[:16]
+        # context['popular'] = Items.objects.order_by('-sold')[:8]
         return context
 
 

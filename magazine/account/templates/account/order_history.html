@@ -5,16 +5,17 @@
 {% if orders %}
   {% for order in orders %}
     <ul>
-      <li>
-        Product: {{ order.product }}<br>
-        Quantity: {{ order.quantity }}<br>
-        Price: {{ order.price }}<br>
-        Payment: {{ order.order.payment }}<br>
-        Delivery: {{ order.order.delivery }}<br>
-        Status: {{ order.order.paid }}<br>
-        Text error: {{ order }}<br>
+      <li><a href="{% url 'account:order_history_detail' order.id %}">
+        Number order: {{ order.id }}<br>
+        Total price: {{ order.get_total_cost }}<br>
+        Payment: {{ order.payment }}<br>
+        Delivery: {{ order.delivery }}<br>
+        Status: {{ order.paid }}<br>
+        {% if order.error %}
+          Error: {{  order.error }}<br>
+        {% endif %}
+        </a>
       </li>
-
     </ul>
   {% endfor %}
 {% else %}

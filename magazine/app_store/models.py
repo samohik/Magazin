@@ -2,7 +2,6 @@ from django.db import models
 from django.urls import reverse
 
 from account.models import User
-from magazine import settings
 
 
 class Items(models.Model):
@@ -93,8 +92,8 @@ class Characteristic(models.Model):
 
 
 class Reviews(models.Model):
-    profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review', null=True)
-    item = models.ForeignKey('Items', on_delete=models.CASCADE, related_name='review', null=True)
+    profile = models.ForeignKey(User, related_name='review', on_delete=models.CASCADE, null=True)
+    item = models.ForeignKey('Items', related_name='review', on_delete=models.CASCADE, null=True)
     text = models.TextField(verbose_name='Review')
     created = models.DateTimeField(verbose_name='Created', auto_now_add=True)
     updated = models.DateTimeField(verbose_name='Updated', auto_now=True)

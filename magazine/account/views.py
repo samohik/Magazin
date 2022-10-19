@@ -4,14 +4,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Prefetch
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic import TemplateView, UpdateView, ListView
+from django.views.generic import TemplateView, UpdateView, ListView, DetailView
 
 from account.forms import RegisterForm
 from account.models import User
-from orders.models import OrderItem
+from orders.models import OrderItem, Order
 
 logger = logging.getLogger('main')
 
@@ -60,25 +62,45 @@ class ProfileUser(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProfileUser, self).get_context_data(**kwargs)
-        context['order'] = OrderItem.objects.select_related(
-            'user', 'order', 'product',
-        ).filter(user=self.request.user).first()
+        context['order'] = Order.objects.filter(user=self.request.user).first()
         return context
 
 
-class OrderHistory(LoginRequiredMixin, ListView):
+class OrderHistoryView(LoginRequiredMixin, ListView):
     template_name = 'account/order_history.html'
-    model = OrderItem
+    model = Order
     context_object_name = 'orders'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(OrderHistory, self).get_context_data(**kwargs)
-        context[self.context_object_name] = OrderItem.objects.select_related(
-            'product', 'order', 'user'
-        ).filter(
-            user=self.request.user
-        )
+        context = super().get_context_data(**kwargs)
+        context['orders'] = Order.objects.\
+            select_related('delivery').\
+            prefetch_related('order_items').all()
         return context
+
+
+class OrderHistoryDetailView(LoginRequiredMixin, DetailView, UpdateView):
+    template_name = 'account/order_history_detail.html'
+    model = Order
+    fields = ['payment']
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderHistoryDetailView, self).get_context_data(**kwargs)
+        context['products'] = Order.objects. \
+            select_related('delivery', ). \
+            prefetch_related(
+                Prefetch(
+                    'order_items',
+                    queryset=OrderItem.objects.select_related(
+                        'product',
+                    ),
+                )
+            ). \
+            filter(id=self.kwargs['pk']).first()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('orders:payment', kwargs={'order_id': self.kwargs['pk']})
 
 
 class ProfileExample(TemplateView):

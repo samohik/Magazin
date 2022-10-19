@@ -15,23 +15,21 @@
   <li>Second name: {{ request.user.last_name }}</li>
   <li>Phone: {{ request.user.phone }}</li>
 </ul>
+<a href="{% url 'account:edit_profile' user.pk %}#edit">Edit profile</a>
 
 <h3>Your last order</h3>
 {% if order %}
     <ul>
-      <li><a href="{% url 'account:order_history' %}">
-        Orders: {{ order.product }}<br>
-        Quantity: {{ order.quantity }}<br>
-        Price: ${{ order.price }}<br>
-        Paid: {{ order.order.paid }}</a><br>
-        {% if order.order.error %}
-          Error: {{  order.order.error }}<br>
-        {% endif %}
-
+      <li>
+        <a href="{% url 'account:order_history_detail' order.id %}">
+          Order: {{ order.id }}<br>
+          data: {{ order.created }}<br>
+          status: {{ order.paid }}<br>
+        </a>
       </li>
     </ul>
+  <a href="{% url 'account:order_history' %}#edit">See all</a>
 {% else %}
   <p>Nothing here</p>
 {% endif %}
-<a href="{% url 'account:edit_profile' user.pk %}#edit">Edit</a>
 {% endblock %}

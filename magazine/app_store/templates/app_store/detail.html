@@ -26,33 +26,36 @@
 
             <div class="ProductCard-desc">
               <div class="ProductCard-header">
-                <h2 class="ProductCard-title">Name: {{ product.name }}
-                </h2>
+
+                <h2 class="ProductCard-title">Name: {{ product.name }}</h2>
+
                 <div class="ProductCard-info">
                   <div class="ProductCard-count">
                     <h3>Count: {{ product.count }}</h3>
                   </div>
+
                   <div class="ProductCard-cost">
                     <div class="ProductCard-price"><h3>Price: ${{ product.price }}</h3>
                     </div>
                   </div>
                 </div>
+
               </div>
 
               <!-- Start Description -->
-              <div class="ProductCard-text">
+              <div class="ProductCard-text" id="description">
                 <h3>Description: {{ product.description }}</h3>
               </div>
               <!-- End Description -->
 
               <!-- Start Cart Product -->
-              <div class="ProductCard-cart"><h2>Cart</h2>
+              <div class="ProductCard-cart" id="cart"><h2>Cart</h2>
                 <div class="ProductCard-cartElement ProductCard-cartElement_amount">
                   <div class="Amount Amount_product">
                      <form action="{% url 'cart:cart_add' product.id %}" method="post">
-                     {{ cart_product_form }}
-                     {% csrf_token %}
-                     <input type="submit" value="Add to cart">
+                       {{ cart_product_form }}
+                       {% csrf_token %}
+                       <input type="submit" value="Add to cart">
                      </form>
                   </div>
                 </div>
@@ -64,7 +67,7 @@
                 <div class="ProductCard-tags">
                   <strong class="ProductCard-tagsTitle">Tags:</strong>
                   {% for tag in product.tags.all %}
-                  <a href="#">{{ tag }}</a>
+                    <a href="#">{{ tag }}</a>
                   {% endfor %}
                 </div>
               </div>
@@ -73,7 +76,7 @@
             </div>
           </div>
           <div class="Tabs Tabs_default">
-            <div class="Tabs-links"><a class="Tabs-link_ACTIVE Tabs-link" href="#description"><span>Описание</span></a><a class="Tabs-link" href="#addit"><span>AdditionaL Info</span></a><a class="Tabs-link" href="#reviews"><span>Reviews (3)</span></a>
+            <div class="Tabs-links"><a class="Tabs-link_ACTIVE Tabs-link" href="#description"><span>Описание</span></a><a class="Tabs-link" href="#reviews"><span>Reviews ({{ product.review.all|length }})</span></a>
             </div>
         </div>
       </div>
